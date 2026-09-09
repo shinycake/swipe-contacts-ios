@@ -193,7 +193,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Swipe Contacts";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
-				INFOPLIST_KEY_NSContactsUsageDescription = "Swipe Contacts needs access to Contacts so it can keep or delete your iCloud contacts. Changes sync to every device signed into this iCloud account.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Swipe Contacts needs access to show, organize, and delete the contacts you share. Changes are saved to each contact’s account and may sync to your other devices.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -226,7 +226,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Swipe Contacts";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
-				INFOPLIST_KEY_NSContactsUsageDescription = "Swipe Contacts needs access to Contacts so it can keep or delete your iCloud contacts. Changes sync to every device signed into this iCloud account.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Swipe Contacts needs access to show, organize, and delete the contacts you share. Changes are saved to each contact’s account and may sync to your other devices.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

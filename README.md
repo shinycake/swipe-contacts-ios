@@ -1,28 +1,32 @@
-# Swipe Contacts for iOS (iCloud)
+# Swipe Contacts for iOS
 
-Native SwiftUI app. Same swipe rules as the Android Google version, but it only touches the **iCloud Contacts** container via `Contacts.framework`. Keeps, stars, and deletes sync through iCloud to every Apple device.
+Native SwiftUI app using `Contacts.framework`. It loads every contact iOS makes available: all contacts with Full Access, or only selected contacts with Limited Access. An iCloud account is not required.
 
-This Linux box cannot compile or sign an IPA (no Xcode, no iOS SDK). Open the project on a Mac.
+## Run
 
-## Install on your iPhone
+1. Open `SwipeContacts.xcodeproj` in Xcode 16 or later.
+2. Select the `SwipeContacts` scheme and an iPhone or iOS simulator.
+3. For a physical iPhone, choose your development team under Signing & Capabilities.
+4. Build and run, then grant Contacts access.
 
-1. Copy `swipe-contacts-ios/` to a Mac with Xcode 15+
-2. Open `SwipeContacts.xcodeproj`
-3. Signing & Capabilities → Team → your Apple ID
-4. Plug in the iPhone, trust the computer
-5. Select the device, press Run
-6. iPhone Settings → General → VPN & Device Management → trust the developer
-7. Grant Contacts. Settings → [your name] → iCloud → Contacts must be on
-
-Free Apple ID signing expires every 7 days. A paid Developer account does not.
+The app refreshes contacts and permission status when it becomes active, including after returning from Settings. A failed fetch shows its error and a retry button; an empty address book shows a separate empty state.
 
 ## Gestures
 
-- Right / heart = keep → iCloud group **Swipe Kept**
-- Left / X = delete → iCloud (Recently Deleted ~30 days)
-- Star = iCloud group **Swipe Stars**
-- Undo = unkeep, or recreate if already deleted
+- Right / heart: add to **Swipe Kept** in the contact’s original account.
+- Star: add to or remove from **Swipe Stars** in the original account.
+- Left / X: delete from the original account.
+- Undo: remove the last Keep, or recreate a contact deleted in this session.
 
-No toasts. Feedback is the KEEP/DELETE stamp and the card flying off.
+Group support and syncing depend on the account provider. Failed writes show an error and leave the visible contact unchanged. Contacts linked across multiple accounts must be deleted using the Contacts app. Trash and undo history last for the current app session; restore recreates the fetched vCard fields with a new identifier and does not restore group memberships. Account-provider recovery features are separate from this app.
 
-Google / Exchange / SIM contacts are ignored.
+## Manual regression checks
+
+Use simulator sample contacts when exercising deletion.
+
+- Grant Full Access with only local contacts: the deck loads without an iCloud gate.
+- Keep and star a contact, relaunch, and check persisted membership. Unkeep and undo should return it to the deck.
+- Deny access in Settings: the app shows **Contacts locked**. Use **Open Settings**, grant access, and return: the deck reloads.
+- Grant Limited Access: only shared contacts appear, with **Manage Contacts Access** available.
+- Share no contacts or use an empty address book: show **No contacts to show**, not a loading error.
+- Delete a sample contact, restore, and act on the restored card: the new identifier is used.

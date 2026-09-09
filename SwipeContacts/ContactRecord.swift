@@ -2,7 +2,62 @@ import Foundation
 import UIKit
 import Contacts
 
-struct ContactRecord: Identifiable, Hashable {
+struct ContactSource: Identifiable, Hashable, Sendable {
+    enum Kind: String, Hashable, Sendable {
+        case local
+        case iCloud
+        case exchange
+        case cardDAV
+        case other
+
+        var icon: String {
+            switch self {
+            case .local: "iphone"
+            case .iCloud: "icloud.fill"
+            case .exchange: "building.2.fill"
+            case .cardDAV: "server.rack"
+            case .other: "person.crop.circle.badge.questionmark"
+            }
+        }
+    }
+
+    let id: String
+    let name: String
+    let kind: Kind
+
+    static func from(_ container: CNContainer) -> ContactSource {
+        let trimmedName = container.name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let name: String
+        let kind: Kind
+
+        switch container.type {
+        case .local:
+            name = "On My iPhone"
+            kind = .local
+        case .exchange:
+            name = trimmedName.isEmpty ? "Exchange" : trimmedName
+            kind = .exchange
+        case .cardDAV:
+            if trimmedName.localizedCaseInsensitiveContains("icloud") {
+                name = "iCloud"
+                kind = .iCloud
+            } else {
+                name = trimmedName.isEmpty ? "CardDAV" : trimmedName
+                kind = .cardDAV
+            }
+        case .unassigned:
+            name = trimmedName.isEmpty ? "Other" : trimmedName
+            kind = .other
+        @unknown default:
+            name = trimmedName.isEmpty ? "Other" : trimmedName
+            kind = .other
+        }
+
+        return ContactSource(id: container.identifier, name: name, kind: kind)
+    }
+}
+
+struct ContactRecord: Identifiable, Hashable, Sendable {
     let id: String
     var givenName: String
     var familyName: String
@@ -10,6 +65,7 @@ struct ContactRecord: Identifiable, Hashable {
     var phones: [String]
     var emails: [String]
     var thumbnail: Data?
+    var sources: [ContactSource]
     var kept: Bool
     var starred: Bool
 
@@ -39,7 +95,12 @@ struct ContactRecord: Identifiable, Hashable {
         return img
     }
 
-    static func from(_ c: CNContact, kept: Bool, starred: Bool) -> ContactRecord {
+    static func from(
+        _ c: CNContact,
+        sources: [ContactSource] = [],
+        kept: Bool,
+        starred: Bool
+    ) -> ContactRecord {
         ContactRecord(
             id: c.identifier,
             givenName: c.givenName,
@@ -48,6 +109,7 @@ struct ContactRecord: Identifiable, Hashable {
             phones: c.phoneNumbers.map { $0.value.stringValue }.filter { !$0.isEmpty },
             emails: c.emailAddresses.map { $0.value as String }.filter { !$0.isEmpty },
             thumbnail: c.thumbnailImageData ?? c.imageData,
+            sources: sources,
             kept: kept,
             starred: starred
         )
