@@ -1,0 +1,25 @@
+# Xcode
+xcuserdata/
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift PM
+.build/
+.swiftpm/
+
+# macOS
+.DS_Store
+*.swp
+
+# Signing
+*.mobileprovision
+*.cer
+*.certSigningRequest
